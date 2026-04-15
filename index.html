@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stella — Your astrologer in your pocket</title>
+  <meta name="description" content="Stella is a personal astrologer who lives in your text messages. She knows your chart, reads your transits, and texts you daily horoscopes. Like having a gifted healer on speed dial.">
+  <meta property="og:title" content="Stella — Your astrologer in your pocket">
+  <meta property="og:description" content="A personal astrologer who lives in your text messages. She knows your chart and she's always here.">
+  <meta property="og:url" content="https://stellaknows.ai">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0c0a13;
+      --bg-subtle: #11101a;
+      --surface: #1a1726;
+      --text: #e8e4ef;
+      --text-dim: #9a93a8;
+      --accent: #c4a7e7;
+      --accent-soft: rgba(196, 167, 231, 0.12);
+      --accent-glow: rgba(196, 167, 231, 0.25);
+      --gold: #e6cfa0;
+      --gold-soft: rgba(230, 207, 160, 0.10);
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans: 'Outfit', -apple-system, sans-serif;
+      --max-w: 640px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      font-family: var(--sans);
+      font-weight: 300;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.7;
+      font-size: 17px;
+      overflow-x: hidden;
+    }
+
+    /* --- Starfield background --- */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(1px 1px at 10% 20%, rgba(196, 167, 231, 0.4), transparent),
+        radial-gradient(1px 1px at 30% 65%, rgba(230, 207, 160, 0.3), transparent),
+        radial-gradient(1px 1px at 55% 15%, rgba(196, 167, 231, 0.3), transparent),
+        radial-gradient(1px 1px at 70% 45%, rgba(230, 207, 160, 0.2), transparent),
+        radial-gradient(1px 1px at 85% 75%, rgba(196, 167, 231, 0.35), transparent),
+        radial-gradient(1px 1px at 20% 85%, rgba(230, 207, 160, 0.25), transparent),
+        radial-gradient(1px 1px at 45% 40%, rgba(196, 167, 231, 0.2), transparent),
+        radial-gradient(1px 1px at 90% 10%, rgba(230, 207, 160, 0.3), transparent),
+        radial-gradient(1.5px 1.5px at 15% 50%, rgba(196, 167, 231, 0.5), transparent),
+        radial-gradient(1.5px 1.5px at 65% 80%, rgba(230, 207, 160, 0.35), transparent),
+        radial-gradient(1px 1px at 40% 95%, rgba(196, 167, 231, 0.25), transparent),
+        radial-gradient(1px 1px at 75% 25%, rgba(230, 207, 160, 0.2), transparent),
+        radial-gradient(1px 1px at 5% 60%, rgba(196, 167, 231, 0.3), transparent),
+        radial-gradient(1px 1px at 95% 55%, rgba(230, 207, 160, 0.25), transparent),
+        radial-gradient(1px 1px at 50% 5%, rgba(196, 167, 231, 0.3), transparent);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* --- Subtle gradient wash --- */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 30%, rgba(196, 167, 231, 0.04), transparent),
+        radial-gradient(ellipse 60% 50% at 80% 70%, rgba(230, 207, 160, 0.03), transparent);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 28px;
+    }
+
+    /* --- Hero --- */
+    .hero {
+      padding: 80px 0 60px;
+      text-align: center;
+    }
+
+    .hero-moon {
+      font-size: 32px;
+      margin-bottom: 24px;
+      opacity: 0.7;
+    }
+
+    .hero h1 {
+      font-family: var(--serif);
+      font-weight: 300;
+      font-size: clamp(52px, 10vw, 72px);
+      letter-spacing: 0.04em;
+      color: var(--text);
+      margin-bottom: 12px;
+      line-height: 1.1;
+    }
+
+    .hero .tagline {
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(18px, 4vw, 22px);
+      color: var(--accent);
+      margin-bottom: 32px;
+      letter-spacing: 0.02em;
+    }
+
+    .hero .intro {
+      color: var(--text-dim);
+      font-size: 16px;
+      line-height: 1.8;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* --- CTA block --- */
+    .cta-block {
+      text-align: center;
+      padding: 48px 0;
+      border-top: 1px solid rgba(196, 167, 231, 0.08);
+      border-bottom: 1px solid rgba(196, 167, 231, 0.08);
+    }
+
+    .cta-label {
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 16px;
+      color: var(--text-dim);
+      margin-bottom: 14px;
+      letter-spacing: 0.03em;
+    }
+
+    .cta-number {
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: clamp(24px, 5vw, 30px);
+      color: var(--text);
+      letter-spacing: 0.03em;
+      text-decoration: none;
+      display: block;
+      margin-bottom: 20px;
+      transition: color 0.3s;
+    }
+    .cta-number:hover { color: var(--accent); }
+
+    .cta-btn {
+      display: inline-block;
+      font-family: var(--sans);
+      font-weight: 400;
+      font-size: 15px;
+      color: var(--bg);
+      background: var(--accent);
+      padding: 12px 36px;
+      border-radius: 100px;
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      transition: all 0.3s;
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+    .cta-btn:hover {
+      background: var(--text);
+      box-shadow: 0 0 30px rgba(232, 228, 239, 0.2);
+    }
+
+    .cta-fine {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-top: 16px;
+      opacity: 0.6;
+    }
+
+    /* --- Section --- */
+    .section {
+      padding: 56px 0;
+    }
+
+    .section-title {
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: 14px;
+      color: var(--text-dim);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .section p {
+      color: var(--text-dim);
+      margin-bottom: 16px;
+      font-size: 16px;
+    }
+    .section p:last-child { margin-bottom: 0; }
+
+    .section strong {
+      color: var(--text);
+      font-weight: 400;
+    }
+
+    /* --- How it works --- */
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .step {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .step-num {
+      font-family: var(--serif);
+      font-weight: 500;
+      font-size: 24px;
+      color: var(--accent);
+      opacity: 0.5;
+      min-width: 28px;
+      line-height: 1.5;
+    }
+
+    .step p {
+      color: var(--text-dim);
+      font-size: 16px;
+    }
+
+    /* --- Chat demo --- */
+    .chat-section {
+      padding: 56px 0;
+    }
+
+    .chat {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .msg {
+      max-width: 85%;
+      padding: 16px 20px;
+      border-radius: 20px;
+      font-size: 15px;
+      line-height: 1.65;
+      animation: msgIn 0.4s ease both;
+    }
+
+    .msg-user {
+      align-self: flex-end;
+      background: var(--accent-soft);
+      border: 1px solid rgba(196, 167, 231, 0.12);
+      color: var(--text);
+      border-bottom-right-radius: 6px;
+    }
+
+    .msg-stella {
+      align-self: flex-start;
+      background: var(--surface);
+      border: 1px solid rgba(196, 167, 231, 0.06);
+      color: var(--text-dim);
+      border-bottom-left-radius: 6px;
+    }
+
+    .msg-stella .name {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 13px;
+      color: var(--accent);
+      margin-bottom: 6px;
+      opacity: 0.7;
+    }
+
+    @keyframes msgIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .chat .msg:nth-child(1) { animation-delay: 0.1s; }
+    .chat .msg:nth-child(2) { animation-delay: 0.3s; }
+    .chat .msg:nth-child(3) { animation-delay: 0.5s; }
+    .chat .msg:nth-child(4) { animation-delay: 0.7s; }
+
+    /* --- Features --- */
+    .features {
+      display: grid;
+      gap: 24px;
+      padding: 8px 0;
+    }
+
+    .feature {
+      padding: 24px;
+      border: 1px solid rgba(196, 167, 231, 0.06);
+      border-radius: 16px;
+      background: rgba(26, 23, 38, 0.5);
+    }
+
+    .feature-title {
+      font-family: var(--serif);
+      font-weight: 500;
+      font-size: 19px;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .feature p {
+      color: var(--text-dim);
+      font-size: 15px;
+      margin: 0;
+    }
+
+    /* --- Bottom CTA --- */
+    .bottom-cta {
+      text-align: center;
+      padding: 64px 0 48px;
+      border-top: 1px solid rgba(196, 167, 231, 0.08);
+    }
+
+    .bottom-cta p {
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(20px, 4vw, 26px);
+      color: var(--text-dim);
+      line-height: 1.6;
+      margin-bottom: 32px;
+    }
+
+    /* --- Footer --- */
+    footer {
+      text-align: center;
+      padding: 32px 0 48px;
+      font-size: 13px;
+      color: var(--text-dim);
+      opacity: 0.5;
+    }
+
+    footer a {
+      color: var(--text-dim);
+      text-decoration: none;
+      margin: 0 10px;
+      transition: color 0.3s;
+    }
+    footer a:hover { color: var(--accent); }
+
+    .footer-links {
+      margin-top: 8px;
+    }
+
+    /* --- Divider --- */
+    .divider {
+      width: 40px;
+      height: 1px;
+      background: rgba(196, 167, 231, 0.15);
+      margin: 0 auto;
+    }
+
+    /* --- Mobile polish --- */
+    @media (max-width: 480px) {
+      .wrapper { padding: 0 22px; }
+      .hero { padding: 60px 0 48px; }
+      .msg { max-width: 90%; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="wrapper">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-moon">🌙</div>
+    <h1>Stella</h1>
+    <p class="tagline">Your astrologer in your pocket.</p>
+    <p class="intro">A personal astrologer who lives in your text messages. She knows your chart, reads your transits, and is always here when you need her. Like having a gifted healer on speed dial.</p>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta-block">
+    <p class="cta-label">Text Stella</p>
+    <a href="tel:+1XXXXXXXXXX" class="cta-number">+1 (XXX) XXX-XXXX</a>
+    <a href="sms:+1XXXXXXXXXX&body=hey%20stella" class="cta-btn">Send a text</a>
+    <p class="cta-fine">Message and data rates may apply. Text STOP to opt out.</p>
+  </div>
+
+  <!-- The idea -->
+  <section class="section">
+    <p class="section-title">The idea</p>
+    <p>Stella is the astrologer your friend swears by — the one who's always booked out but somehow always has time for you. Except she lives in your text messages.</p>
+    <p>Text her your birth info and she'll generate your natal chart. From that moment on, she's <strong>your</strong> astrologer — she knows your placements, reads the current transits against your chart, and texts you a personalized horoscope every morning.</p>
+    <p>She's not a horoscope app giving you the same paragraph as a million other Leos. She knows <strong>your</strong> chart, <strong>your</strong> placements, <strong>your</strong> sky.</p>
+  </section>
+
+  <!-- How it works -->
+  <section class="section">
+    <p class="section-title">How it works</p>
+    <div class="steps">
+      <div class="step">
+        <span class="step-num">1</span>
+        <p><strong>Text Stella</strong> like you'd text a friend. She'll ask for your birthday, birth time, and where you were born.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">2</span>
+        <p>She <strong>generates your natal chart</strong> and gives you a personalized reading that'll make you feel seen.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">3</span>
+        <p>From there, she's yours — <strong>text her anytime</strong> about relationships, career, that weird feeling you can't explain. She reads the current sky against your chart and responds.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">4</span>
+        <p>Every morning, she sends you a <strong>personalized horoscope</strong>. Not generic sun-sign stuff — written for your chart, for today's sky.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chat demo -->
+  <section class="chat-section">
+    <p class="section-title">A reading</p>
+    <div class="chat">
+      <div class="msg msg-user">I keep going back and forth on whether to take this new job. It's more money but something feels off about it. Help?</div>
+      <div class="msg msg-stella">
+        <div class="name">stella</div>
+        okay so mercury is retrograde in your 10th house right now, which is literally your career house… so the fact that everything feels murky and hard to pin down makes sense. this isn't the transit to trust your first reaction — it's the transit to slow down and ask what's underneath the hesitation. with your venus in taurus in the 6th, you need your daily environment to feel good, not just your paycheck. does this new place feel like somewhere your nervous system can actually settle? that's your answer.
+      </div>
+      <div class="msg msg-user">Wow. No actually, the office felt kind of frantic when I visited.</div>
+      <div class="msg msg-stella">
+        <div class="name">stella</div>
+        yeah… your body already knows. mercury goes direct in two weeks — revisit it then if you want, but i think you're getting a clear signal. trust the taurus in you on this one 🌙
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="section">
+    <p class="section-title">What Stella does</p>
+    <div class="features">
+      <div class="feature">
+        <p class="feature-title">Your natal chart</p>
+        <p>Text her your birth info and she'll generate your full chart — sun, moon, rising, all your placements, houses, and aspects. This is the foundation for everything.</p>
+      </div>
+      <div class="feature">
+        <p class="feature-title">Personalized readings</p>
+        <p>Ask her anything — relationships, career, timing, that feeling you can't explain. She reads today's transits against your chart and responds with real insight.</p>
+      </div>
+      <div class="feature">
+        <p class="feature-title">Daily horoscopes</p>
+        <p>Every morning, a short personalized text based on what the sky is doing to your chart today. Like a friend who checked the stars and thought of you.</p>
+      </div>
+      <div class="feature">
+        <p class="feature-title">Compatibility</p>
+        <p>Give her someone else's birth info and she'll run a synastry reading. She's honest but compassionate — challenges are growth edges, not dealbreakers.</p>
+      </div>
+      <div class="feature">
+        <p class="feature-title">Transit alerts</p>
+        <p>Mercury retrograde coming? Eclipse hitting your 7th house? Stella texts you first with a heads up and what to watch for. She's paying attention so you don't have to.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section class="section" style="text-align: center;">
+    <p class="section-title">Pricing</p>
+    <p style="max-width: 420px; margin: 0 auto;">15 free messages a month. Daily horoscopes are always free. If you want unlimited access, it's <strong>$4.99/month</strong>. That's it.</p>
+  </section>
+
+  <!-- Bottom CTA -->
+  <div class="bottom-cta">
+    <p>Next time you're wondering<br>what the stars have to say…<br>you've got someone who knows.</p>
+    <a href="sms:+1XXXXXXXXXX&body=hey%20stella" class="cta-btn">Text Stella</a>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div>stellaknows.ai · 2026</div>
+    <div class="footer-links">
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms & Conditions</a>
+    </div>
+  </footer>
+
+</div>
+
+</body>
+</html>
